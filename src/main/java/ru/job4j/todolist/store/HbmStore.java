@@ -9,6 +9,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ru.job4j.todolist.model.Item;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -47,6 +48,20 @@ public class HbmStore implements Store {
         }
     }
 
+    private void tx(final Consumer<Session> command) {
+        final Session session = SF.openSession();
+        final Transaction tx = session.beginTransaction();
+        try {
+            command.accept(session);
+            tx.commit();
+        } catch (final Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
     @Override
     public Item add(Item item) {
         return this.tx(session -> {
@@ -57,15 +72,12 @@ public class HbmStore implements Store {
 
     @Override
     public List<Item> findAll() {
-        return this.tx(session -> session.createQuery("from Item").list());
+        return this.tx((Function<Session, List>) session -> session.createQuery("from Item").list());
     }
 
     @Override
     public void update(Item item) {
-        this.tx(session -> {
-            session.update(item);
-            return item;
-        });
+        this.tx((Consumer<Session>) session -> session.update(item));
     }
 
     @Override
