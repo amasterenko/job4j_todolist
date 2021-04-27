@@ -4,6 +4,8 @@ import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Objects;
+
 /**
  * The class represents a task in TODOList
  * @author AndrewMs
@@ -19,6 +21,9 @@ public class Item {
     private String description;
     private Timestamp created;
     private boolean done;
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="user_id")
+    private User owner;
 
     public Item(String description, Timestamp created) {
         this.description = description;
@@ -58,5 +63,30 @@ public class Item {
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Item item = (Item) o;
+        return id == item.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

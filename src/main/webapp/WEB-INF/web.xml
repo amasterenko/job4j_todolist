@@ -2,15 +2,43 @@
  "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
-<web-app>
+<web-app
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+        version="3.0">
   <display-name>Archetype Created Web Application</display-name>
   <servlet>
     <servlet-name>HandlerServlet</servlet-name>
     <servlet-class>ru.job4j.todolist.servlets.HandlerServlet</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>RegServlet</servlet-name>
+    <servlet-class>ru.job4j.todolist.servlets.RegServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AuthServlet</servlet-name>
+    <servlet-class>ru.job4j.todolist.servlets.AuthServlet</servlet-class>
+  </servlet>
+  <filter>
+  <filter-name>AuthFilter</filter-name>
+  <filter-class>ru.job4j.todolist.filter.AuthFilter</filter-class>
+  </filter>
 
   <servlet-mapping>
     <servlet-name>HandlerServlet</servlet-name>
     <url-pattern>/items</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>RegServlet</servlet-name>
+    <url-pattern>/reg</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AuthServlet</servlet-name>
+    <url-pattern>/auth</url-pattern>
+  </servlet-mapping>
+  <filter-mapping>
+    <filter-name>AuthFilter</filter-name>
+    <url-pattern>*</url-pattern>
+  </filter-mapping>
 </web-app>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>TODO List</title>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="func.js"></script>
+
+</head>
+
+<body class="bg-light text-center">
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 order-md-1 mb-4">
+        </div>
+        <div class="col-md-4 order-md-2 mb-4">
+            <div class="py-5 text-center">
+                <img class="d-block mx-auto mb-4" src="/todolist/img/logo.svg" alt="" width="72" height = "72">
+                <h2>TODO List</h2>
+            </div>
+            <form id="form" class="was-validated" method="post">
+                <label for="inputName" class="sr-only">User name</label>
+                <input type="text" id="inputName" class="form-control" placeholder="User name" required autofocus>
+                <label for="inputPassword" class="sr-only">Password</label>
+                <div class="d-flex p-2"></div>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                <div class="d-flex p-2"></div>
+                <label class="custom-control">
+                    <input type="checkbox" id="signInUp" value="" onclick="setSignMode();">Sign up
+                </label>
+                <div class="d-flex p-2"></div>
+                <button class="btn btn-lg btn-primary btn-block" id="submit" type="submit"> </button>
+                <div class="d-flex p-2"></div>
+                <div class="row" id="msg"></div>
+            </form>
+        </div>
+        <div class="col-md-4 order-md-3 mb-4">
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(setSignMode());
+
+    $("#form").submit(function(event) {
+        subm();
+        event.preventDefault();
+    });
+</script>
+</body>
+</html>
