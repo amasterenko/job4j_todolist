@@ -20,8 +20,8 @@
     <div class="row  float-right">
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" onclick="logout();" href="javascript:void(0);" id="logout">
-                    - | logout</a>
+                <a class="nav-link" onclick="signout();" href="javascript:void(0);" id="signout">
+                    - | Sign out</a>
             </li>
         </ul>
     </div>
@@ -68,7 +68,7 @@
 <script>
     $(document).ready(function() {
         let username = localStorage.getItem("todouser");
-        $("#logout").text(username + " | logout");
+        $("#signout").text(username + " | Sign out");
         fillInTable()
     });
 </script>

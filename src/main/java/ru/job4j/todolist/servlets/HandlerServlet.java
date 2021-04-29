@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * The servlet returns all the items of current logged user as a json array object using doGet.
+ * The user's password is cleared.
  * The servlet receives POST-requests with an item data of current logged user as a json object and
  * replies as well.
  * If the item's id in POST request equals 0 then a new item with the same data will be
@@ -74,6 +75,7 @@ public class HandlerServlet extends HttpServlet {
             HttpSession sc = req.getSession();
             User currentUser = (User) sc.getAttribute("user");
             List<Item> items = STORE.findAllByUser(currentUser).orElse(List.of());
+            items.forEach(i -> i.getOwner().setPassword(null));
             PrintWriter writer = resp.getWriter();
             writer.print(new JSONArray(items));
             writer.flush();
