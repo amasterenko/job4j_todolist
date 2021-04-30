@@ -10,7 +10,7 @@ public class TestStore {
     public static void main(String[] args) {
         Store store =HbmStore.instOf();
         User user = User.of("user1");
-        Item item = new Item("testitem", new Timestamp(System.currentTimeMillis()));
+        Item item = new Item("testitem");
         item.setOwner(user);
         /*store.add(item);
         System.out.println(store.findByName("user1").getId());

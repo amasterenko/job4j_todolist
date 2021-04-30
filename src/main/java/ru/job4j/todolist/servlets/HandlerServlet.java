@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.job4j.todolist.model.Category;
 import ru.job4j.todolist.model.Item;
 import ru.job4j.todolist.model.User;
 import ru.job4j.todolist.store.HbmStore;
@@ -16,8 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,27 +46,27 @@ public class HandlerServlet extends HttpServlet {
             HttpSession sc = req.getSession();
             User currentUser = (User) sc.getAttribute("user");
             JSONObject jsonReq = new JSONObject(ReqReader.getString(req));
-            Item item = new Item(
-                    jsonReq.getString("description"),
-                    new Timestamp(jsonReq.getLong("created"))
-            );
+            Item item = new Item(jsonReq.getString("description"));
             item.setOwner(currentUser);
             List<String> categoryIds = new ArrayList<>();
             jsonReq.getJSONArray("categories").forEach(e -> categoryIds.add(e.toString()));
             Item newItem;
             if (jsonReq.getInt("id") == 0) {
+                item.setCreated(new Date(System.currentTimeMillis()));
                 newItem = STORE.addItem(item, categoryIds).orElse(item);
+                newItem.getOwner().setPassword(null);
+                PrintWriter writer = resp.getWriter();
+                writer.print(new JSONObject(newItem));
+                writer.flush();
             } else {
                 item.setId(jsonReq.getInt("id"));
                 item.setDone(jsonReq.getBoolean("done"));
                 STORE.update(item, categoryIds);
-                newItem = item;
+                PrintWriter writer = resp.getWriter();
+                writer.print(new JSONObject().put("message", "updated").put("code", 1));
+                writer.flush();
             }
-            newItem.getOwner().setPassword(null);
-            PrintWriter writer = resp.getWriter();
-            writer.print(new JSONObject(newItem));
-            writer.flush();
-        } catch (Exception e) {
+                    } catch (Exception e) {
             LOG.error("Exception occurred: ", e);
         }
     }

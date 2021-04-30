@@ -1,10 +1,8 @@
 package ru.job4j.todolist.model;
 
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
-
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,7 +19,9 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String description;
-    private Timestamp created;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false)
+    private Date created;
     private boolean done;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="user_id")
@@ -29,9 +29,9 @@ public class Item {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Category> categories = new ArrayList<>();
 
-    public Item(String description, Timestamp created) {
+    public Item(String description) {
         this.description = description;
-        this.created = created;
+        this.created = new Date(System.currentTimeMillis());;
     }
 
     public Item() {
@@ -49,7 +49,7 @@ public class Item {
         return description;
     }
 
-    public Timestamp getCreated() {
+    public Date getCreated() {
         return created;
     }
 
@@ -65,7 +65,7 @@ public class Item {
         this.description = description;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 

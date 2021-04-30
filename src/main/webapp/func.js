@@ -58,13 +58,12 @@ function createItem() {
     let json = {
         id: 0,
         description: $('#description').val(),
-        created: Date.now(),
         done: false,
         categories: categoryIds
     };
     sendItem(json, false);
     $('#description').val('');
-    $("#categorySelect").removeAttr("selected");
+    $("#categorySelect option:selected").prop("selected", false);
     return true;
 }
 
@@ -187,7 +186,7 @@ function setSignMode() {
 }
 
 /**
- * Function validates the inputs on index.html page, sends the credentials as JSON and sets the info messages
+ * Function validates the inputs on index.html page, sends the credentials as JSON and sets info messages
  * on the page depending on the response's type.
  *
  * @returns {boolean}
