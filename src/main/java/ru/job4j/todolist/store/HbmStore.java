@@ -8,6 +8,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.job4j.todolist.model.Category;
 import ru.job4j.todolist.model.Item;
 import ru.job4j.todolist.model.User;
 
@@ -72,31 +73,50 @@ public class HbmStore implements Store {
     }
 
     @Override
-    public Optional<Item> add(Item item) {
+    public Optional<Item> addItem(Item item, List<String> categoryIds) {
         return this.txFunc(session -> {
+            categoryIds.forEach(
+                    id -> item.addCategory(
+                            session.find(Category.class, Integer.parseInt(id))
+                    )
+            );
             session.save(item);
             return item;
         });
     }
 
     @Override
-    public Optional<List<Item>> findAll() {
-        return this.txFunc(session -> session.createQuery("from Item").list());
+    public Optional<List<Item>> findAllItems() {
+        return this.txFunc(session -> session.createQuery(
+                "select distinct c from Item c join fetch c.categories").list());
+    }
+    
+    @Override
+    public Optional<List<Category>> findAllCategories() {
+        return this.txFunc(session -> session.createQuery("from Category ").list());
     }
 
     @Override
-    public Optional<List<Item>> findAllByUser(User user) {
-        return this.txFunc(session -> session.createQuery("from Item where owner = :paramUser")
+    public Optional<List<Item>> findAllItemsByUser(User user) {
+        return this.txFunc(session -> session.createQuery(
+                "select distinct c from Item c join fetch c.categories where c.owner = :paramUser")
                                             .setParameter("paramUser", user).list());
     }
 
     @Override
-    public void update(Item item) {
-        this.txCons(session -> session.update(item));
+    public void update(Item item, List<String> categoryIds) {
+        this.txCons(session -> {
+            categoryIds.forEach(
+                    id -> item.addCategory(
+                            session.find(Category.class, Integer.parseInt(id))
+                    )
+            );
+            session.update(item);
+        });
     }
 
     @Override
-    public Optional<User> add(User user) {
+    public Optional<User> addUser(User user) {
         return this.txFunc(session -> {
             session.save(user);
             return user;
@@ -104,7 +124,7 @@ public class HbmStore implements Store {
     }
 
     @Override
-    public Optional<User> findByName(String userName) {
+    public Optional<User> findUserByName(String userName) {
         return this.txFunc(
                 session -> (User) session.createQuery("from User where name =: paramName")
                                     .setParameter("paramName", userName)

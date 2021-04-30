@@ -4,6 +4,8 @@ import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -21,9 +23,11 @@ public class Item {
     private String description;
     private Timestamp created;
     private boolean done;
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="user_id")
     private User owner;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Category> categories = new ArrayList<>();
 
     public Item(String description, Timestamp created) {
         this.description = description;
@@ -31,6 +35,10 @@ public class Item {
     }
 
     public Item() {
+    }
+
+    public void addCategory(Category category) {
+        categories.add(category);
     }
 
     public int getId() {
@@ -71,6 +79,14 @@ public class Item {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     @Override

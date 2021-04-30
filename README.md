@@ -1,5 +1,6 @@
 #TODO List  
 [![Build Status](https://travis-ci.org/amasterenko/job4j_todolist.svg?branch=master)](https://travis-ci.org/amasterenko/job4j_todolist)  
+____ 
 
 The purpose of this project is to write a ToDo list using:  
 - Hibernate  
@@ -12,7 +13,7 @@ The purpose of this project is to write a ToDo list using:
 ____  
 - Creating tasks  
 - Managing tasks' statuses  
-- Filtering tasks on its status (completed/open)  
+- Filtering tasks on its status (done/undone)  
 
 ### Preview:  
 ____  

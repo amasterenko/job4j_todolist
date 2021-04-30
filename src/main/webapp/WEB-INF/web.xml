@@ -30,6 +30,10 @@
     <url-pattern>/items</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+    <servlet-name>HandlerServlet</servlet-name>
+    <url-pattern>/categories</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>RegServlet</servlet-name>
     <url-pattern>/reg</url-pattern>
   </servlet-mapping>
