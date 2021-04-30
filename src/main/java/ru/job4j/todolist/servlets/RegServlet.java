@@ -38,7 +38,7 @@ public class RegServlet extends HttpServlet {
             user.setPassword(jsonReq.getString("password"));
             int code  = 1;
             String msg = "Registration is successful! You can sign in now.";
-            if (STORE.add(user).isEmpty()) {
+            if (STORE.addUser(user).isEmpty()) {
                 code = 0;
                 msg = "User with the same name already exists! Please, try another name.";
             }

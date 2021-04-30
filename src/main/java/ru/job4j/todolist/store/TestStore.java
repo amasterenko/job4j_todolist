@@ -4,7 +4,6 @@ import ru.job4j.todolist.model.Item;
 import ru.job4j.todolist.model.User;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 public class TestStore {
@@ -16,13 +15,11 @@ public class TestStore {
         /*store.add(item);
         System.out.println(store.findByName("user1").getId());
         System.out.println(store.findByName("user1").getName());*/
-        List<Item> items = store.findAll().orElse(List.of());
+        List<Item> items = store.findAllItemsByUser(store.findUserByName("user1").get()).orElse(List.of());
         items.forEach(i -> {
-            if (i.getOwner() != null) {
                 System.out.println(i.getDescription() + " owner:" + i.getOwner().getName());
-            } else {
-                System.out.println(i.getDescription() + " -no owner");
-            }
+                i.getCategories().forEach(System.out::println);
         });
+
     }
 }

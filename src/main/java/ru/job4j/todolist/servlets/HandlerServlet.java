@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.job4j.todolist.model.Category;
 import ru.job4j.todolist.model.Item;
 import ru.job4j.todolist.model.User;
 import ru.job4j.todolist.store.HbmStore;
@@ -16,13 +17,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The servlet returns all the items of current logged user as a json array object using doGet.
- * The user's password is cleared.
  * The servlet receives POST-requests with an item data of current logged user as a json object and
- * replies as well.
+ * replies in the same way.
+ * It clears user's password when replies on GETs or POSTs.
  * If the item's id in POST request equals 0 then a new item with the same data will be
  * saved in the db in other case the item will be updated.
 
@@ -50,15 +52,18 @@ public class HandlerServlet extends HttpServlet {
                     new Timestamp(jsonReq.getLong("created"))
             );
             item.setOwner(currentUser);
+            List<String> categoryIds = new ArrayList<>();
+            jsonReq.getJSONArray("categories").forEach(e -> categoryIds.add(e.toString()));
             Item newItem;
             if (jsonReq.getInt("id") == 0) {
-                newItem = STORE.add(item).orElse(item);
+                newItem = STORE.addItem(item, categoryIds).orElse(item);
             } else {
                 item.setId(jsonReq.getInt("id"));
                 item.setDone(jsonReq.getBoolean("done"));
-                STORE.update(item);
+                STORE.update(item, categoryIds);
                 newItem = item;
             }
+            newItem.getOwner().setPassword(null);
             PrintWriter writer = resp.getWriter();
             writer.print(new JSONObject(newItem));
             writer.flush();
@@ -72,9 +77,16 @@ public class HandlerServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         try {
+            String path = req.getRequestURI();
+            if ("categories".equals(path.substring(path.lastIndexOf('/') + 1))) {
+                PrintWriter writer = resp.getWriter();
+                writer.print(new JSONArray(STORE.findAllCategories().orElse(List.of())));
+                writer.flush();
+                return;
+            }
             HttpSession sc = req.getSession();
             User currentUser = (User) sc.getAttribute("user");
-            List<Item> items = STORE.findAllByUser(currentUser).orElse(List.of());
+            List<Item> items = STORE.findAllItemsByUser(currentUser).orElse(List.of());
             items.forEach(i -> i.getOwner().setPassword(null));
             PrintWriter writer = resp.getWriter();
             writer.print(new JSONArray(items));

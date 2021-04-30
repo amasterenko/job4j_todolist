@@ -1,8 +1,32 @@
 /*functions for index.html*/
 
 /**
+ * Function fills in the select control with categories.
+ */
+function fillInCategorySelectCtrl() {
+    let fullPath = window.location.href;
+    let rootPath = fullPath.substring(0, fullPath.lastIndexOf('/')) + '/';
+    $.ajax({
+        type: 'GET',
+        url: rootPath + 'categories',
+        dataType: 'json',
+    }).done(function (data) {
+        let categories = data;
+        categories.sort(function(a, b) {
+            return parseInt(a.id) - parseInt(b.id);
+        });
+        let selectItems;
+        for (let i = 0; i < categories.length; i++) {
+            selectItems += "<option value='" + categories[i].id + "'>" + categories[i].name + "</option>";
+        }
+        $("#categorySelect").append(selectItems);
+    });
+    return true;
+}
+
+/**
  * Function sends json with Item(task) data to the server and runs refreshing tasks' table
- * on index.html page if required.
+ * on the page if required.
  *
  * @param json JSON with Item data.
  * @param noRefreshTable Boolean parameter for further items' table refreshing.
@@ -27,34 +51,48 @@ function sendItem(json, noRefreshTable) {
  * @returns {boolean}
  */
 function createItem() {
-    if ($('#description').val() ==="") {
+    if ($('#description').val() ==="" || $('#categorySelect').val() ==="") {
         return false;
     }
+    let categoryIds = $('#categorySelect').val();
     let json = {
         id: 0,
         description: $('#description').val(),
         created: Date.now(),
-        done: false
+        done: false,
+        categories: categoryIds
     };
     sendItem(json, false);
     $('#description').val('');
+    $("#categorySelect").removeAttr("selected");
     return true;
 }
 
 /**
  * Function prepares JSON with Item's data and passes it to sendItem() function.
- * If ShowAll checkbox is checked the items' table won't be refreshed.
- * @param showAll Checkbox object - "Show All" on the index page.
+ * Before that it defines the item's categories' ids reading them from categories select control.
+ * If "ShowAll" checkbox is checked the items' table won't be refreshed.
+ *
+ * @param checkBox Checkbox object in the item's row.
  */
-function changeItemStatus(showAll) {
-    const $values = $(showAll).parent().parent().find('td');
+function changeItemStatus(checkBox) {
+    const $values = $(checkBox).parent().parent().find('td');
+    const catNamesArray = $(checkBox).parent().parent().find('p').text().split(',');
+    let catIdsArray = [];
+    $("#categorySelect option").each(function()
+    {
+        if (jQuery.inArray($(this).text(), catNamesArray) !== -1) {
+            catIdsArray.push($(this).val())
+        }
+    });
     let json = {
         id: $values.eq(0).text(),
         description: $values.eq(1).text(),
         created: Date.parse($values.eq(2).text()),
-        done: (showAll.is(':checked'))
+        done: (checkBox.is(':checked')),
+        categories: catIdsArray
     }
-    sendItem(json, showAll.is(':checked'));
+    sendItem(json, $("#showAll").is(':checked'));
 }
 
 /**
@@ -89,20 +127,32 @@ function fillInTable() {
 }
 
 /**
- * Function receives item and build a row for the table.
+ * Function receives Item json object and build a row for the table:
+ * "id"/"description"/"created"/"user"/done checkbox/"categories" collapse href
  * @param data Item object.
  */
 function addItemToTable(data) {
     let checked = data.done ? ' checked="checked" ' : "";
+    let categoriesWithSep = data.categories.map(function (val) {
+        return val.name;
+    }).join(',');
     $('#tbody').append('<tr>\n'
         + '<td>' + data.id + '</td>\n'
         + '<td>' + data.description + '</td>\n'
         + '<td>' + data.created + '</td>\n'
         + '<td>' + localStorage.getItem("todouser") + '</td>\n'
-        + '<td><input type="checkbox"' + checked + 'onclick="changeItemStatus($(this));">'
-        + '</td>\n</tr>"')
+        + '<td><input type="checkbox"' + checked + 'onclick="changeItemStatus($(this));"></td>\n'
+        + '<td><a data-toggle="collapse" href="#catClps-'+ data.id + '" aria-expanded="false"'
+        + ' aria-controls="catClps-'+ data.id + '">[...]</a>\n'
+        + '<div class="collapse" id="catClps-'+ data.id + '">\n'
+        + '<div class="card" style="width: 9rem;">\n'
+        + '<div class="card card-body" id="categories-'+ data.id + '">\n'
+        + '<p class="card-text"><i>' + categoriesWithSep +'</i></p>\n'
+        + '</div>\n'
+        + '</div>\n'
+        + '</div>\n'
+        + '<td></tr>');
 }
-
 /**
  * Function for logging out of logged user.
  * @returns {boolean}
@@ -118,7 +168,7 @@ function signout() {
 /*functions for signin.html*/
 
 /**
- * Functions sets the button's label and the input's type on the sign-in/up page.
+ * Function sets the button's label and the input's type on the sign-in/up page.
  * @returns {boolean}
  */
 function setSignMode() {
@@ -137,8 +187,8 @@ function setSignMode() {
 }
 
 /**
- * Function validates the inputs, sends the credentials as JSON and sets the messages
- * depending on the response's type.
+ * Function validates the inputs on index.html page, sends the credentials as JSON and sets the info messages
+ * on the page depending on the response's type.
  *
  * @returns {boolean}
  */

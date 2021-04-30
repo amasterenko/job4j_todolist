@@ -31,18 +31,21 @@
     </div>
     <div class="row">
         <div class="col-md-4 order-md-1 mb-4">
-            <h4 class="mb-3">New task:</h4>
+            <h4 class="mb-3">New task</h4>
             <form class="was-validated" id="form">
                 <div class="mb-3">
-                    <label for="description">Description</label>
+                    <label for="description">Description:</label>
                     <textarea class="form-control" rows=2 id="description" required></textarea>
                 </div>
+                <label class="my-1 mr-2" for="categorySelect">Category:</label>
+                <select class="custom-select my-1 mr-sm-2" id="categorySelect" multiple required>
+                </select>
                 <hr class="mb-4">
                 <button type="button" class="btn btn-primary btn-block" onclick="return createItem();">Create</button>
             </form>
         </div>
         <div class="col-md-8 order-md-2 mb-4">
-            <h4 class="mb-3">Tasks to do:</h4>
+            <h4 class="mb-3">Tasks to do</h4>
             <div class="custom-control custom-checkbox float-right">
                 <input class="custom-control-input" type="checkbox" value="" id="showAll" onclick="fillInTable();">
                 <!--form-check-input-->
@@ -57,6 +60,7 @@
                     <th>Created</th>
                     <th>User</th>
                     <th>Done</th>
+                    <th>Categories</th>
                 </tr>
                 </thead>
                 <tbody id="tbody">
@@ -69,7 +73,8 @@
     $(document).ready(function() {
         let username = localStorage.getItem("todouser");
         $("#signout").text(username + " | Sign out");
-        fillInTable()
+        fillInTable();
+        fillInCategorySelectCtrl();
     });
 </script>
 </body>

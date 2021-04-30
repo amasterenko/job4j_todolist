@@ -34,7 +34,7 @@ public class AuthServlet extends HttpServlet {
         try {
             JSONObject jsonReq = new JSONObject(ReqReader.getString(req));
             String password = jsonReq.getString("password");
-            User user = STORE.findByName(jsonReq.getString("username")).orElse(null);
+            User user = STORE.findUserByName(jsonReq.getString("username")).orElse(null);
             String msg = "Authorization failed! Login or password is incorrect.";
             int code = 0;
             if (user != null && password.equals(user.getPassword())) {
