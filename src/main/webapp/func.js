@@ -58,22 +58,19 @@ function createItem() {
     let json = {
         id: 0,
         description: $('#description').val(),
-        created: Date.now(),
         done: false,
         categories: categoryIds
     };
     sendItem(json, false);
     $('#description').val('');
-    $("#categorySelect").removeAttr("selected");
+    $("#categorySelect option:selected").prop("selected", false);
     return true;
 }
 
 /**
  * Function prepares JSON with Item's data and passes it to sendItem() function.
- * Before that it defines the item's categories' ids reading them from categories select control.
- * If "ShowAll" checkbox is checked the items' table won't be refreshed.
- *
- * @param checkBox Checkbox object in the item's row.
+ * If ShowAll checkbox is checked the items' table won't be refreshed.
+ * @param showAll Checkbox object - "Show All" on the index page.
  */
 function changeItemStatus(checkBox) {
     const $values = $(checkBox).parent().parent().find('td');
@@ -132,15 +129,11 @@ function fillInTable() {
 }
 
 /**
- * Function receives Item json object and build a row for the table:
- * "id"/"description"/"created"/"user"/done checkbox/"categories" collapse href
+ * Function receives an item and builds a row for the table.
  * @param data Item object.
  */
 function addItemToTable(data) {
     let checked = data.done ? ' checked="checked" ' : "";
-    let categoriesWithSep = data.categories.map(function (val) {
-        return val.name;
-    }).join(',');
     $('#tbody').append('<tr>\n'
         + '<td class="align-middle">' + data.id + '</td>\n'
         + '<td class="align-middle">' + data.description + '</td>\n'
@@ -173,7 +166,7 @@ function signout() {
 /*functions for signin.html*/
 
 /**
- * Function sets the button's label and the input's type on the sign-in/up page.
+ * Functions sets the button's label and the input's type on the sign-in/up page.
  * @returns {boolean}
  */
 function setSignMode() {
@@ -192,7 +185,7 @@ function setSignMode() {
 }
 
 /**
- * Function validates the inputs on index.html page, sends the credentials as JSON and sets the info messages
+ * Function validates the inputs on index.html page, sends the credentials as JSON and sets info messages
  * on the page depending on the response's type.
  *
  * @returns {boolean}
