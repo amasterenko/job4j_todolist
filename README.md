@@ -1,26 +1,22 @@
 ## TODO List  
 [![Build Status](https://travis-ci.org/amasterenko/job4j_todolist.svg?branch=master)](https://travis-ci.org/amasterenko/job4j_todolist)  
-____ 
 
 The purpose of this project is to write a ToDo list using the following technologies:  
 - Java Core  
 - Hibernate (PostgreSQL)
 - JAVA servlets/JSTL    
 - Bootstrap  
-- JS/JQuery/AJAX
+- JS/jQuery/AJAX
 - Travis CI
 - Slf4j  
 
-#### Features  
-____  
+#### Features
 - User authentication  
 - Creating tasks    
 - Managing task status     
 - Filtering tasks on done/undone status    
 
-#### Preview  
-____  
-
+#### User interface  
 ![ScreenShot](images/signin.png)  
 
 ![ScreenShot](images/main.png)  

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * The class verifies user authorization by serving POST-requests or
+ * The class verifies user authorization by serving POST-requests and
  * makes users unauthorized by serving GET-requests.
  * @author AndrewMs
  * @version 1.0
