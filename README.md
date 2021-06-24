@@ -1,7 +1,7 @@
 ## TODO List  
 [![Build Status](https://travis-ci.org/amasterenko/job4j_todolist.svg?branch=master)](https://travis-ci.org/amasterenko/job4j_todolist)  
 
-The purpose of this project is to write a ToDo list using the following technologies:  
+The purpose of this project is to write a ToDo list app using the following technologies:  
 - Java Core  
 - Hibernate (PostgreSQL)
 - JAVA servlets/JSTL    
